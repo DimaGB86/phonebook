@@ -33,6 +33,10 @@
     • сделать выборку нужной записи - сам поиск,
     • показать результат поиска. '''
 
+'''Домашняя работа:
+Задача 38: Дополнить телефонный справочник возможностью изменения и удаления данных.
+Пользователь также может ввести имя или фамилию, и Вы должны реализовать функционал для изменения и 
+удаления данных. '''
 
 def input_name():
     return input("Введите имя контакта: ")
@@ -99,18 +103,81 @@ def search_contact():
             print(contact_str + "\n")
 
 
+def change_contact():
+    print("Варианты для изменения:\n"
+          "1.Фамилия\n"
+          "2.Имя\n"
+          "3.Отчество\n"
+          "4.Телефон\n"
+          "5.Адрес")
+    command = input("Укажите вариант изменения: ")
+    while command not in ("1", "2", "3", "4", "5"):
+        print("Некорректный ввод номера варианта!\n"
+              "Повторите ввод")
+        command = input("Укажите номер варианта: ")
+    # print()
+    i_change_param = int(command) - 1
+    search = input("Введите данные для поиска: ").title()
+    contacts_list = read_file().rstrip().split("\n\n")
+    # print(contacts_list)
+    new_contacts_list = []
+    for contact_str in contacts_list:
+        contact_lst = contact_str.replace("\n", " ").split()
+        # print(contact_lst)
+        if search in contact_lst[i_change_param]:
+            new_contact_lst = contact_lst
+            new_contact_lst[i_change_param] = input(f"Введите новые данные для изменения {contact_lst[i_change_param]}: ")
+            new_contacts_list.append(" ".join(new_contact_lst))
+            print()
+        else:
+            new_contacts_list.append(contact_str)
+    with open("phonebook.txt", "w", encoding="UTF-8") as file:
+        for contact_str in new_contacts_list:
+            file.write(contact_str + "\n\n")
+
+
+def delete_contact():
+    print("Варианты для удаления:\n"
+          "1.Фамилия\n"
+          "2.Имя\n"
+          "3.Отчество\n"
+          "4.Телефон\n"
+          "5.Адрес")
+    command = input("Укажите вариант удаления: ")
+    while command not in ("1", "2", "3", "4", "5"):
+        print("Некорректный ввод номера варианта!\n"
+              "Повторите ввод")
+        command = input("Укажите номер варианта: ")
+    print()
+    i_delete_param = int(command) - 1
+    search = input("Введите данные для поиска: ").title()
+    contacts_list = read_file().rstrip().split("\n\n")
+    # print(contacts_list)
+    new_contacts_list = []
+    for contact_str in contacts_list:
+        contact_lst = contact_str.replace("\n", " ").split()
+        # print(contact_lst)
+        if search not in contact_lst[i_delete_param]:
+            new_contacts_list.append(contact_str)
+    with open("phonebook.txt", "w", encoding="UTF-8") as file:
+        for contact_str in new_contacts_list:
+            file.write(contact_str + "\n\n")
+
+
 def interface():
     with open("phonebook.txt", "a", encoding="UTF-8"):
         pass
     command = ""
-    while command != "4":
-        print("Выберите вариант работы с телефонной книгой:\n"
+    while command != "6":
+        print("Выберите вариантработы с телефонной книгой:\n"
               "1.Запись данных\n"
               "2.Вывод телефонной книги на экран\n"
               "3.Поиск данных\n"
-              "4.Выход")
+              "4.Изменение данных\n"
+              "5.Удаление данных\n"
+              "6.Выход")
         command = input("Введите номер операции: ")
-        while command not in ("1", "2", "3", "4"):
+        while command not in ("1", "2", "3", "4", "5", "6"):
             print("Некорректный ввод номера операции!\n"
                   "Повторите ввод")
             command = input("Введите номер операции: ")
@@ -124,6 +191,10 @@ def interface():
             case "3":
                 search_contact()
             case "4":
+                change_contact()
+            case "5":
+                delete_contact()
+            case "6":
                 print("Приложение закрыто!")
 
 if __name__ == '__main__':
